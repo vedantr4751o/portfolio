@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanchan Rajput — Portfolio Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #0A0A0A;
+      color: #F2F2F0;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0A0A0A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #222;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D4FF32;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Login Overlay -->
+  <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md transition-opacity duration-300">
+    <div class="glass-card border border-white/10 p-8 rounded-2xl w-full max-w-md shadow-2xl text-center">
+      <div class="w-16 h-16 bg-[#D4FF32] rounded-2xl mx-auto flex items-center justify-center font-bold text-2xl text-black mb-4">KP</div>
+      <h2 class="text-2xl font-bold tracking-tight mb-2">Portfolio Admin Panel</h2>
+      <p class="text-white/40 text-sm mb-6">Enter password to manage Kanchan Rajput's Portfolio</p>
+      
+      <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
+        <input type="password" id="admin-password" placeholder="Admin Password" required
+          class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] focus:ring-1 focus:ring-[#D4FF32] outline-none text-center transition-colors">
+        <button type="submit" 
+          class="w-full py-3 bg-[#D4FF32] hover:bg-[#e2ff70] text-black font-semibold rounded-xl transition-colors">
+          Authenticate
+        </button>
+      </form>
+      <p id="login-error" class="text-red-500 text-sm mt-3 hidden">Incorrect password. Please try again.</p>
+    </div>
+  </div>
+
+  <!-- Main Content Wrapper -->
+  <div id="admin-content" class="hidden flex-grow flex flex-col">
+    <!-- Navbar -->
+    <header class="border-b border-white/10 bg-[#0A0A0A]/80 backdrop-blur sticky top-0 z-40 px-6 py-4">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <div class="px-3 py-1 rounded bg-[#D4FF32] text-black font-black text-sm tracking-wider">ADMIN</div>
+          <h1 class="text-lg font-bold tracking-tight">Kanchan Rajput <span class="text-[#D4FF32]">•</span> Portfolio</h1>
+        </div>
+        <div class="flex items-center gap-4">
+          <button onclick="saveAllChanges()" 
+            class="px-5 py-2 bg-[#D4FF32] hover:bg-[#e2ff70] text-black text-sm font-semibold rounded-full transition-colors flex items-center gap-2">
+            <span>Save Changes</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-black animate-pulse"></span>
+          </button>
+          <button onclick="handleLogout()" 
+            class="px-4 py-2 border border-white/10 hover:border-red-500/50 hover:text-red-500 text-white/60 text-sm rounded-full transition-colors">
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto w-full px-6 py-8 flex-grow grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-8">
+      <!-- Tabs Navigation -->
+      <aside class="space-y-1">
+        <button onclick="switchTab('personal')" data-tab="personal" class="w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 font-medium bg-[#D4FF32] text-black">
+          <span>Personal Info</span>
+        </button>
+        <button onclick="switchTab('contact')" data-tab="contact" class="w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 font-medium text-white/60 hover:text-white hover:bg-white/5">
+          <span>Contact & Social</span>
+        </button>
+        <button onclick="switchTab('skills')" data-tab="skills" class="w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 font-medium text-white/60 hover:text-white hover:bg-white/5">
+          <span>Skills & Expertise</span>
+        </button>
+        <button onclick="switchTab('education')" data-tab="education" class="w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 font-medium text-white/60 hover:text-white hover:bg-white/5">
+          <span>Education Timeline</span>
+        </button>
+        <button onclick="switchTab('projects')" data-tab="projects" class="w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 font-medium text-white/60 hover:text-white hover:bg-white/5">
+          <span>Projects</span>
+        </button>
+        <button onclick="switchTab('leadership')" data-tab="leadership" class="w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 font-medium text-white/60 hover:text-white hover:bg-white/5">
+          <span>Leadership / Club</span>
+        </button>
+        <button onclick="switchTab('certifications')" data-tab="certifications" class="w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 font-medium text-white/60 hover:text-white hover:bg-white/5">
+          <span>Certifications & Hobbies</span>
+        </button>
+      </aside>
+
+      <!-- Forms Container -->
+      <main class="glass-card border border-white/[0.06] rounded-2xl p-8 relative">
+        <!-- Toast Status Alert -->
+        <div id="toast" class="absolute top-4 right-4 px-4 py-2.5 rounded-xl border hidden text-sm font-semibold z-50"></div>
+
+        <!-- Personal Info Tab -->
+        <section id="tab-personal" class="tab-section space-y-6">
+          <h2 class="text-xl font-bold tracking-tight text-[#D4FF32]">Personal Information</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Full Name</label>
+              <input type="text" id="p-fullName" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Title / Headline</label>
+              <input type="text" id="p-title" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Date of Birth</label>
+              <input type="text" id="p-dob" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Gender</label>
+              <input type="text" id="p-gender" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Marital Status</label>
+              <input type="text" id="p-marital" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Languages</label>
+              <input type="text" id="p-languages" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">CGPA Score</label>
+              <input type="text" id="p-cgpa" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Hero Badge Text</label>
+              <input type="text" id="p-profileText" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1 md:col-span-2">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Current Location</label>
+              <input type="text" id="p-currentLoc" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1 md:col-span-2">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Permanent Address</label>
+              <input type="text" id="p-permanentLoc" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+          </div>
+        </section>
+
+        <!-- Contact & Social Tab -->
+        <section id="tab-contact" class="tab-section space-y-6 hidden">
+          <h2 class="text-xl font-bold tracking-tight text-[#D4FF32]">Contact & Social Accounts</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Primary Email</label>
+              <input type="email" id="c-email0" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Secondary Email</label>
+              <input type="email" id="c-email1" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Primary Phone</label>
+              <input type="text" id="c-phone0" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Secondary Phone</label>
+              <input type="text" id="c-phone1" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1 md:col-span-2">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">LinkedIn Profile Link</label>
+              <input type="url" id="c-linkedin" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+            <div class="space-y-1 md:col-span-2">
+              <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">GitHub Profile Link</label>
+              <input type="url" id="c-github" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+            </div>
+          </div>
+        </section>
+
+        <!-- Skills Tab -->
+        <section id="tab-skills" class="tab-section space-y-6 hidden">
+          <h2 class="text-xl font-bold tracking-tight text-[#D4FF32]">Skills & Key Expertise</h2>
+          
+          <div class="space-y-2">
+            <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Skills List (Comma Separated)</label>
+            <textarea id="s-list" rows="3" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors mono text-sm"></textarea>
+          </div>
+
+          <div class="space-y-4">
+            <h3 class="text-sm font-semibold tracking-wider uppercase text-white/70">Skill Categories</h3>
+            <div id="s-categories-container" class="space-y-4">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Education Tab -->
+        <section id="tab-education" class="tab-section space-y-6 hidden">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-bold tracking-tight text-[#D4FF32]">Education Timeline</h2>
+            <button onclick="addEducation()" class="px-4 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-xs font-semibold transition-colors">
+              + Add Education
+            </button>
+          </div>
+
+          <div id="ed-container" class="space-y-6">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <!-- Projects Tab -->
+        <section id="tab-projects" class="tab-section space-y-6 hidden">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-bold tracking-tight text-[#D4FF32]">Projects List</h2>
+            <button onclick="addProject()" class="px-4 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-xs font-semibold transition-colors">
+              + Add Project
+            </button>
+          </div>
+
+          <div id="proj-container" class="space-y-8">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <!-- Leadership Tab -->
+        <section id="tab-leadership" class="tab-section space-y-6 hidden">
+          <h2 class="text-xl font-bold tracking-tight text-[#D4FF32]">Leadership & Clubs</h2>
+          
+          <div id="lead-container" class="space-y-6">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <!-- Certifications Tab -->
+        <section id="tab-certifications" class="tab-section space-y-6 hidden">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xl font-bold tracking-tight text-[#D4FF32]">Certifications & Hobbies</h2>
+            <button onclick="addCertification()" class="px-4 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-xs font-semibold transition-colors">
+              + Add Certification
+            </button>
+          </div>
+
+          <div id="certs-container" class="space-y-6">
+            <!-- Dynamically populated -->
+          </div>
+
+          <div class="space-y-2 pt-4 border-t border-white/10">
+            <label class="text-xs text-white/40 font-semibold tracking-wider uppercase">Hobbies (Comma Separated)</label>
+            <input type="text" id="hobbies-list" class="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none transition-colors">
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    let portfolioData = {};
+    let activePassword = '';
+
+    // Check existing authentication
+    window.onload = function() {
+      const savedPass = localStorage.getItem('admin_pass');
+      if (savedPass) {
+        validatePassword(savedPass);
+      }
+    };
+
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.className = `absolute top-4 right-4 px-4 py-2.5 rounded-xl border text-sm font-semibold z-50 ${isError ? 'bg-red-500/10 border-red-500 text-red-500' : 'bg-green-500/10 border-green-500 text-green-500'}`;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const password = document.getElementById('admin-password').value;
+      validatePassword(password);
+    }
+
+    async function validatePassword(password) {
+      try {
+        const authRes = await fetch('/api/auth', {
+          headers: { 'X-Admin-Password': password }
+        });
+        if (authRes.ok) {
+          activePassword = password;
+          localStorage.setItem('admin_pass', password);
+          document.getElementById('login-overlay').classList.add('hidden');
+          document.getElementById('admin-content').classList.remove('hidden');
+          
+          const res = await fetch('/api/portfolio');
+          const data = await res.json();
+          portfolioData = data;
+          populateForm(data);
+        } else {
+          document.getElementById('login-error').classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Error checking authentication.", true);
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('admin_pass');
+      activePassword = '';
+      document.getElementById('login-overlay').classList.remove('hidden');
+      document.getElementById('admin-content').classList.add('hidden');
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+      document.querySelectorAll('aside button').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabName) {
+          btn.className = "w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 font-medium bg-[#D4FF32] text-black";
+        } else {
+          btn.className = "w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 font-medium text-white/60 hover:text-white hover:bg-white/5";
+        }
+      });
+    }
+
+    function populateForm(data) {
+      // Personal
+      document.getElementById('p-fullName').value = data.personal.fullName || '';
+      document.getElementById('p-title').value = data.personal.title || '';
+      document.getElementById('p-dob').value = data.personal.dob || '';
+      document.getElementById('p-gender').value = data.personal.gender || '';
+      document.getElementById('p-marital').value = data.personal.maritalStatus || '';
+      document.getElementById('p-languages').value = data.personal.languages || '';
+      document.getElementById('p-cgpa').value = data.personal.cgpa || '';
+      document.getElementById('p-profileText').value = data.personal.profileText || '';
+      document.getElementById('p-currentLoc').value = data.personal.currentAddress || '';
+      document.getElementById('p-permanentLoc').value = data.personal.permanentAddress || '';
+
+      // Contact
+      document.getElementById('c-email0').value = data.contact.emails[0] || '';
+      document.getElementById('c-email1').value = data.contact.emails[1] || '';
+      document.getElementById('c-phone0').value = data.contact.phones[0] || '';
+      document.getElementById('c-phone1').value = data.contact.phones[1] || '';
+      document.getElementById('c-linkedin').value = data.contact.linkedin || '';
+      document.getElementById('c-github').value = data.contact.github || '';
+
+      // Skills
+      document.getElementById('s-list').value = data.skills.list.join(', ') || '';
+      
+      const catContainer = document.getElementById('s-categories-container');
+      catContainer.innerHTML = '';
+      data.skills.categories.forEach((cat, index) => {
+        catContainer.innerHTML += `
+          <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4 items-center">
+            <span class="text-sm font-semibold text-white/60">${cat.k}</span>
+            <input type="text" id="s-cat-${index}" value="${cat.v}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+          </div>
+        `;
+      });
+
+      // Education
+      renderEducation(data.education);
+
+      // Projects
+      renderProjects(data.projects);
+
+      // Leadership
+      renderLeadership(data.leadership);
+
+      // Certifications
+      renderCertifications(data.certifications);
+
+      // Hobbies
+      document.getElementById('hobbies-list').value = data.hobbies.join(', ') || '';
+    }
+
+    function renderEducation(education) {
+      const container = document.getElementById('ed-container');
+      container.innerHTML = '';
+      education.forEach((ed, index) => {
+        container.innerHTML += `
+          <div class="p-5 border border-white/10 rounded-xl space-y-4 relative bg-white/[0.01]">
+            <button onclick="removeEducation(${index})" class="absolute top-4 right-4 text-xs font-semibold text-red-500 hover:underline">Remove</button>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label class="text-xs text-white/40 uppercase">Year</label>
+                <input type="text" id="ed-year-${index}" value="${ed.year}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs text-white/40 uppercase">Accent Color</label>
+                <input type="text" id="ed-color-${index}" value="${ed.color}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="col-span-2 space-y-1">
+                <label class="text-xs text-white/40 uppercase">Institute Name</label>
+                <input type="text" id="ed-title-${index}" value="${ed.title}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="col-span-2 space-y-1">
+                <label class="text-xs text-white/40 uppercase">Degree / Standard</label>
+                <input type="text" id="ed-sub-${index}" value="${ed.sub}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="col-span-2 space-y-1">
+                <label class="text-xs text-white/40 uppercase">Metadata (Marks, Location)</label>
+                <input type="text" id="ed-meta-${index}" value="${ed.meta}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function addEducation() {
+      portfolioData.education.push({ year: '', title: '', sub: '', meta: '', color: '#fff' });
+      renderEducation(portfolioData.education);
+    }
+
+    function removeEducation(idx) {
+      portfolioData.education.splice(idx, 1);
+      renderEducation(portfolioData.education);
+    }
+
+    function renderProjects(projects) {
+      const container = document.getElementById('proj-container');
+      container.innerHTML = '';
+      projects.forEach((proj, index) => {
+        container.innerHTML += `
+          <div class="p-6 border border-white/10 rounded-xl space-y-4 relative bg-white/[0.01]">
+            <button onclick="removeProject(${index})" class="absolute top-4 right-4 text-xs font-semibold text-red-500 hover:underline">Remove</button>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label class="text-xs text-white/40 uppercase">Title</label>
+                <input type="text" id="proj-title-${index}" value="${proj.title}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs text-white/40 uppercase">Subtitle</label>
+                <input type="text" id="proj-sub-${index}" value="${proj.subtitle}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs text-white/40 uppercase">Duration</label>
+                <input type="text" id="proj-dur-${index}" value="${proj.duration}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs text-white/40 uppercase">Team Size</label>
+                <input type="text" id="proj-team-${index}" value="${proj.teamSize}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="col-span-2 space-y-1">
+                <label class="text-xs text-white/40 uppercase">GitHub Repository URL</label>
+                <input type="url" id="proj-github-${index}" value="${proj.github}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="col-span-2 space-y-1">
+                <label class="text-xs text-white/40 uppercase">Technologies used (Comma Separated)</label>
+                <input type="text" id="proj-tech-${index}" value="${proj.tech.join(', ')}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="col-span-2 space-y-1">
+                <label class="text-xs text-white/40 uppercase">Bullet Points (One per line)</label>
+                <textarea id="proj-details-${index}" rows="3" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">${proj.details.join('\n')}</textarea>
+              </div>
+              
+              <!-- Metrics / Optional metadata -->
+              <div class="col-span-2 border-t border-white/5 pt-3 mt-2 grid grid-cols-3 gap-2">
+                <div class="space-y-1">
+                  <label class="text-[10px] text-white/40 uppercase">Metric 1 Name</label>
+                  <input type="text" id="proj-m1-${index}" value="${Object.keys(proj.metrics || {})[0] || ''}" class="w-full px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm">
+                </div>
+                <div class="space-y-1">
+                  <label class="text-[10px] text-white/40 uppercase">Metric 1 Value</label>
+                  <input type="text" id="proj-v1-${index}" value="${Object.values(proj.metrics || {})[0] || ''}" class="w-full px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm">
+                </div>
+                <div class="space-y-1">
+                  <label class="text-[10px] text-white/40 uppercase">Roles Tag (optional)</label>
+                  <input type="text" id="proj-roles-${index}" value="${proj.role || ''}" class="w-full px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm">
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function addProject() {
+      portfolioData.projects.push({ title: '', subtitle: '', duration: '', teamSize: '1', github: '', tech: [], details: [], metrics: {}, role: '' });
+      renderProjects(portfolioData.projects);
+    }
+
+    function removeProject(idx) {
+      portfolioData.projects.splice(idx, 1);
+      renderProjects(portfolioData.projects);
+    }
+
+    function renderLeadership(leadership) {
+      const container = document.getElementById('lead-container');
+      container.innerHTML = '';
+      leadership.forEach((lead, index) => {
+        container.innerHTML += `
+          <div class="p-5 border border-white/10 rounded-xl space-y-4 bg-white/[0.01]">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label class="text-xs text-white/40 uppercase">Title</label>
+                <input type="text" id="lead-title-${index}" value="${lead.title}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs text-white/40 uppercase">Badge status</label>
+                <input type="text" id="lead-status-${index}" value="${lead.status}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="col-span-2 space-y-1">
+                <label class="text-xs text-white/40 uppercase">Description</label>
+                <textarea id="lead-desc-${index}" rows="2" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">${lead.desc}</textarea>
+              </div>
+              <div class="col-span-2 space-y-1">
+                <label class="text-xs text-white/40 uppercase">Skills tags (Comma Separated)</label>
+                <input type="text" id="lead-skills-${index}" value="${lead.skills.join(', ')}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderCertifications(certs) {
+      const container = document.getElementById('certs-container');
+      container.innerHTML = '';
+      certs.forEach((cert, index) => {
+        container.innerHTML += `
+          <div class="p-5 border border-white/10 rounded-xl space-y-4 relative bg-white/[0.01]">
+            <button onclick="removeCertification(${index})" class="absolute top-4 right-4 text-xs font-semibold text-red-500 hover:underline">Remove</button>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label class="text-xs text-white/40 uppercase">Title</label>
+                <input type="text" id="cert-title-${index}" value="${cert.title}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs text-white/40 uppercase">Badge status</label>
+                <input type="text" id="cert-org-${index}" value="${cert.organization || cert.subtitle || ''}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+              <div class="col-span-2 space-y-1">
+                <label class="text-xs text-white/40 uppercase">Description</label>
+                <textarea id="cert-desc-${index}" rows="2" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">${cert.desc}</textarea>
+              </div>
+              <div class="col-span-2 space-y-1">
+                <label class="text-xs text-white/40 uppercase">Skills tags (optional, Comma Separated)</label>
+                <input type="text" id="cert-skills-${index}" value="${(cert.skills || []).join(', ')}" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:border-[#D4FF32] outline-none">
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function addCertification() {
+      portfolioData.certifications.push({ title: '', organization: 'CERTIFIED', desc: '', skills: [] });
+      renderCertifications(portfolioData.certifications);
+    }
+
+    function removeCertification(idx) {
+      portfolioData.certifications.splice(idx, 1);
+      renderCertifications(portfolioData.certifications);
+    }
+
+    async function saveAllChanges() {
+      // Re-compile form data into portfolioData object
+      
+      // Personal
+      portfolioData.personal.fullName = document.getElementById('p-fullName').value;
+      portfolioData.personal.title = document.getElementById('p-title').value;
+      portfolioData.personal.dob = document.getElementById('p-dob').value;
+      portfolioData.personal.gender = document.getElementById('p-gender').value;
+      portfolioData.personal.maritalStatus = document.getElementById('p-marital').value;
+      portfolioData.personal.languages = document.getElementById('p-languages').value;
+      portfolioData.personal.cgpa = document.getElementById('p-cgpa').value;
+      portfolioData.personal.profileText = document.getElementById('p-profileText').value;
+      portfolioData.personal.currentAddress = document.getElementById('p-currentLoc').value;
+      portfolioData.personal.permanentAddress = document.getElementById('p-permanentLoc').value;
+
+      // Contact
+      portfolioData.contact.emails = [
+        document.getElementById('c-email0').value,
+        document.getElementById('c-email1').value
+      ];
+      portfolioData.contact.phones = [
+        document.getElementById('c-phone0').value,
+        document.getElementById('c-phone1').value
+      ];
+      portfolioData.contact.linkedin = document.getElementById('c-linkedin').value;
+      portfolioData.contact.github = document.getElementById('c-github').value;
+
+      // Skills
+      portfolioData.skills.list = document.getElementById('s-list').value.split(',').map(s => s.trim()).filter(s => s);
+      portfolioData.skills.categories.forEach((cat, index) => {
+        cat.v = document.getElementById(`s-cat-${index}`).value;
+      });
+
+      // Education
+      portfolioData.education.forEach((ed, index) => {
+        ed.year = document.getElementById(`ed-year-${index}`).value;
+        ed.color = document.getElementById(`ed-color-${index}`).value;
+        ed.title = document.getElementById(`ed-title-${index}`).value;
+        ed.sub = document.getElementById(`ed-sub-${index}`).value;
+        ed.meta = document.getElementById(`ed-meta-${index}`).value;
+      });
+
+      // Projects
+      portfolioData.projects.forEach((proj, index) => {
+        proj.title = document.getElementById(`proj-title-${index}`).value;
+        proj.subtitle = document.getElementById(`proj-sub-${index}`).value;
+        proj.duration = document.getElementById(`proj-dur-${index}`).value;
+        proj.teamSize = document.getElementById(`proj-team-${index}`).value;
+        proj.github = document.getElementById(`proj-github-${index}`).value;
+        proj.tech = document.getElementById(`proj-tech-${index}`).value.split(',').map(t => t.trim()).filter(t => t);
+        proj.details = document.getElementById(`proj-details-${index}`).value.split('\n').map(d => d.trim()).filter(d => d);
+        
+        // Metrics & Roles
+        const m1Key = document.getElementById(`proj-m1-${index}`).value.trim();
+        const m1Val = document.getElementById(`proj-v1-${index}`).value.trim();
+        if (m1Key) {
+          proj.metrics = { [m1Key]: m1Val };
+        } else {
+          proj.metrics = {};
+        }
+        proj.role = document.getElementById(`proj-roles-${index}`).value.trim();
+      });
+
+      // Leadership
+      portfolioData.leadership.forEach((lead, index) => {
+        lead.title = document.getElementById(`lead-title-${index}`).value;
+        lead.status = document.getElementById(`lead-status-${index}`).value;
+        lead.desc = document.getElementById(`lead-desc-${index}`).value;
+        lead.skills = document.getElementById(`lead-skills-${index}`).value.split(',').map(s => s.trim()).filter(s => s);
+      });
+
+      // Certifications
+      portfolioData.certifications.forEach((cert, index) => {
+        cert.title = document.getElementById(`cert-title-${index}`).value;
+        const org = document.getElementById(`cert-org-${index}`).value;
+        if (cert.organization !== undefined) {
+          cert.organization = org;
+        } else {
+          cert.subtitle = org;
+        }
+        cert.desc = document.getElementById(`cert-desc-${index}`).value;
+        cert.skills = document.getElementById(`cert-skills-${index}`).value.split(',').map(s => s.trim()).filter(s => s);
+      });
+
+      // Hobbies
+      portfolioData.hobbies = document.getElementById('hobbies-list').value.split(',').map(h => h.trim()).filter(h => h);
+
+      // Send update request to server
+      try {
+        const res = await fetch('/api/portfolio', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Password': activePassword
+          },
+          body: JSON.stringify(portfolioData)
+        });
+
+        if (res.ok) {
+          showToast("Portfolio changes saved successfully!");
+        } else {
+          const errData = await res.json();
+          showToast(`Error saving: ${errData.error}`, true);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("Network error. Failed to save changes.", true);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+{
+  "personal": {
+    "fullName": "KANCHAN SHAMSING RAJPUT",
+    "dob": "08 May 2004",
+    "gender": "Female",
+    "maritalStatus": "Single",
+    "currentAddress": "Pune-411018",
+    "permanentAddress": "Chalisgaon, Jalgaon, Maharashtra, India",
+    "languages": "English, Hindi, Marathi",
+    "title": "B.E. ENTC / MERN Dev",
+    "cgpa": "8.28",
+    "profileText": "VP • ENTC CODING CLUB"
+  },
+  "contact": {
+    "emails": [
+      "kanchanrajput1208@gmail.com",
+      "kanchu1308@gmail.com"
+    ],
+    "phones": [
+      "+91-8767412989",
+      "+91-8007845875"
+    ],
+    "linkedin": "https://www.linkedin.com/in/kanchan-rajput08/",
+    "github": "https://github.com/kanchan-rajput"
+  },
+  "skills": {
+    "list": [
+      "OOPs",
+      "DSA",
+      "React.js",
+      "Node.js",
+      "MongoDB",
+      "Express.js",
+      "HTML",
+      "CSS",
+      "Bootstrap",
+      "Redux Toolkit",
+      "SQL",
+      "MySQL",
+      "Git",
+      "Github",
+      "Docker",
+      "Javascript",
+      "Java",
+      "Tailwind CSS",
+      "NoSQL",
+      "Core Java",
+      "DBMS",
+      "SDLC",
+      "REST API Design"
+    ],
+    "categories": [
+      {
+        "k": "Frontend",
+        "v": "React.js, Redux Toolkit, Tailwind, Bootstrap, HTML/CSS, EJS"
+      },
+      {
+        "k": "Backend",
+        "v": "Node.js, Express.js, Middleware, REST API, JWT"
+      },
+      {
+        "k": "Database & Tools",
+        "v": "MongoDB, MySQL, SQL, Git, Github, Docker"
+      }
+    ]
+  },
+  "education": [
+    {
+      "year": "2026",
+      "title": "Dr. D. Y. Patil Institute of Technology",
+      "sub": "B.E. Electronics & Telecommunication Engineering",
+      "meta": "CGPA 8.05/10 • Pune • Final Year",
+      "color": "#D4FF32"
+    },
+    {
+      "year": "2023",
+      "title": "Cusrow Wadia Institute Of Technology, Pune",
+      "sub": "Diploma Electronics and Telecommunication Engineering",
+      "meta": "MSBTE • 86.47% • Pune",
+      "color": "#F2F2F0"
+    },
+    {
+      "year": "2020",
+      "title": "KPMV Chalisgaon",
+      "sub": "10th Standard",
+      "meta": "MSBSHSE • 85.60% • Chalisgaon, Jalgaon",
+      "color": "#888"
+    }
+  ],
+  "projects": [
+    {
+      "title": "Prescripto",
+      "subtitle": "Doctor Appointment Booking System",
+      "github": "https://github.com/kanchan-rajput/Prescripto_Appointment_Booking",
+      "teamSize": "1",
+      "role": "Solo Full-Stack",
+      "duration": "06 Mar 2025 - 30 Jun 2025",
+      "tech": [
+        "React.js",
+        "HTML",
+        "Bootstrap",
+        "CSS",
+        "Node.js",
+        "Express.js",
+        "Middleware",
+        "MongoDB",
+        "Git",
+        "Github",
+        "REST API Design",
+        "Javascript"
+      ],
+      "details": [
+        "Developed role-based healthcare booking platform with patient, doctor, admin access streamlining 25+ daily appointments",
+        "Implemented JWT-secured APIs, responsive dashboards, optimized scheduling flows reducing booking time by 30%",
+        "Deployed MERN stack architecture ensuring scalability, maintainability, seamless UX across devices"
+      ],
+      "metrics": {
+        "dailyBookings": "25+"
+      },
+      "architecture": "MERN • JWT Auth • REST • Role Middleware • Responsive Dashboards • MongoDB aggregation for scheduling • Optimized mobile UX"
+    },
+    {
+      "title": "Wanderlust Explorer",
+      "subtitle": "Villa & Vacation Home Listing Website",
+      "github": "https://github.com/kanchan-rajput/wanderlust_project_demo",
+      "teamSize": "1",
+      "duration": "01 Jan 2025 - 01 Mar 2025",
+      "tech": [
+        "Node.js",
+        "Express.js",
+        "MongoDB",
+        "EJS",
+        "Bootstrap",
+        "HTML",
+        "CSS",
+        "Javascript"
+      ],
+      "details": [
+        "Built full-stack rental platform enabling 50+ property listings with mobile-responsive design",
+        "Added form validation, dynamic rendering, CRUD APIs improving listing management efficiency by 40%"
+      ],
+      "metrics": {
+        "listings": "50+ Listings"
+      },
+      "role": ""
+    }
+  ],
+  "certifications": [
+    {
+      "title": "JAVA Data Structures",
+      "organization": "Certified",
+      "desc": "Focused on DSA implementation in Java, OOP patterns, and problem-solving for interviews.",
+      "skills": []
+    },
+    {
+      "title": "SOFT SKILLS FOR IT",
+      "subtitle": "Communication, Presentation, Teamwork & Collaboration",
+      "desc": "Completed certified program covering communication, teamwork, analytical thinking, professional etiquette for client-facing and technical environments.",
+      "skills": [
+        "Communication Skills",
+        "Soft Skills",
+        "Presentation and public speaking",
+        "Teamwork and collaboration"
+      ]
+    }
+  ],
+  "leadership": [
+    {
+      "title": "Vice President Of ENTC Coding Club",
+      "status": "CURRENT",
+      "desc": "Currently serving, leading planning and execution of college-level coding events, workshops, hackathons. Mentors students in web development, DSA, Git/GitHub, managing team coordination, logistics, outreach.",
+      "skills": [
+        "Leadership",
+        "Mentorship",
+        "Event Planning",
+        "Web Dev Mentoring",
+        "DSA",
+        "Git/GitHub"
+      ]
+    },
+    {
+      "title": "Secretary Of ENTC Coding Club",
+      "status": "SEC",
+      "desc": "Organized meetings, maintained records, coordinated technical events like workshops, hackathons, guest lectures. Managed internal communications, logistics, collaborations with faculty and industry.",
+      "skills": [
+        "Operations",
+        "Documentation",
+        "Faculty Collab",
+        "Industry Connect",
+        "Logistics"
+      ]
+    }
+  ],
+  "hobbies": [
+    "Badminton",
+    "Travel",
+    "Music"
+  ]
+}
